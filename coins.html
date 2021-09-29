@@ -1,0 +1,117 @@
+<html>
+    <head>
+        <style>
+
+
+            th {
+                /* border: solid 2px red; */
+                padding: 6px;
+                color: black;
+                /* margin: 20px; */
+            }
+
+            td {
+                padding: 18px 18px;
+                text-align: center;
+                border-bottom: dotted 1px black;
+                
+
+            }
+
+            [id="Price"] {
+                text-align: center;
+                padding: 6px;
+            }
+
+            [id="Change"]::before {
+                content: '\25B2';
+                text-align: center;
+                color: rgb(6, 180, 64)
+            }
+
+            [id="C"]::before {
+                content: '\25BC';
+                /* text-align: center; */
+                color: rgb(202, 7, 7);
+            }
+
+            [id="C"] {
+                color: rgb(202, 7, 7);
+                text-align: center;
+            }
+
+            [id="Change"] {
+                padding: 16px 40px;
+                text-align: center;
+                color: rgb(54, 206, 8);
+            }
+        </style>
+    </head>
+    <body>
+        <div id="container">
+            
+            <table id="myTable" >
+                <tr>
+                    <th id="s">#</th>
+                    <th id="symbol">Symbol</th>
+                    <th id="name">Name</th>
+                    <th id="price">Price</th>
+                    <th id="change">Change</th>
+              <th id="market">Market Cap</th>
+              <th id="volume">Volume</th>
+              <th id="circulating">Circulating</th>
+            </tr>
+        </table>
+    </div>
+          <input type="button" value="Details" onclick="getDetails()">
+        <script> 
+        function getDetails() {
+            
+            fetch('https://api.coincap.io/v2/assets')
+            .then(res=>res.json())
+            .then(users=>{
+                console.log(users);
+                for (let i = 0; i < users.data.length; i++) {
+                    const user = users.data[i];
+                    let s = document.createElement('td');
+                    s.innerText = i + 1;
+                    let symbol = document.createElement('td');
+                    symbol.innerText = user.symbol;
+                    let name = document.createElement('td');
+                    name.innerText = user.name;
+                    let price = document.createElement('td');
+                    price.setAttribute('id', 'Price');
+                    price.innerText = "$ "+ parseFloat(user.priceUsd).toLocaleString(); 
+                    let change = document.createElement('td');
+                    change.innerText = parseFloat(user.changePercent24Hr).toFixed(2);
+                    change.setAttribute('id', 'Change');
+                    let check = parseFloat(user.changePercent24Hr);
+                    if(check < 0) {
+                        change.setAttribute('id', 'C');
+                    }
+
+                    let market = document.createElement('td');
+                    market.innerText = "$ "+ parseFloat(user.marketCapUsd).toLocaleString(2);
+                    let volume = document.createElement('td');
+                    volume.innerText = "$ "+ parseFloat(user.volumeUsd24Hr).toLocaleString();
+                    let circulating = document.createElement('td');
+                    circulating.innerText = user.changePercent24Hr;
+
+                    let tr = document.createElement('tr');
+                    tr.appendChild(s);
+                    tr.appendChild(symbol);
+                    tr.appendChild(name);
+                    tr.appendChild(price);
+                    tr.appendChild(change);
+                    tr.appendChild(market);
+                    tr.appendChild(volume);
+                    tr.appendChild(circulating);
+
+                    document.getElementById('myTable').appendChild(tr);
+
+                }
+            });
+        }      
+        </script>
+    </body>
+</html>
